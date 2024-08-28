@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Idea Generator</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #111;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: #111;
+            transition: background 0.3s ease;
+            z-index: 1000;
+        }
+
+        .header.scrolled {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav button {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav button:hover {
+            color: #ddd;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 800px;
+            margin: 80px auto 0;
+            padding: 0 20px;
+        }
+
+        .content h1 {
+            font-size: 2.7em;
+            background: linear-gradient(90deg, #ff009d, #0a91ff, #8913ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 5s linear infinite;
+            transition: font-size 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .content h1:hover {
+            font-size: 3rem;
+            background: linear-gradient(180deg, #ff009d, #0a91ff, #8913ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 5s linear infinite;
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .content p {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .content button,
+        .content textarea,
+        .content .submit-btn {
+            background: #fff;
+            color: #111;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.3s ease;
+        }
+
+        .content button:hover {
+            background: linear-gradient(90deg, #ff007f, #7f00ff, #00d2ff);
+            color: #fff;
+        }
+
+        .content .submit-btn:hover {
+            background: #ddd;
+        }
+
+        .content textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            width: 100%;
+            max-width: 500px;
+            height: 15px;
+        }
+
+        .content textarea:focus {
+            border-color: #ff007f;
+            outline: none;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: #111;
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .footer button {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .footer button:hover {
+            color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                background: #111;
+                padding: 20px;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                border-radius: 0 0 20px 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .content {
+                margin-top: 80px;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .content h1 {
+                font-size: 1.5em;
+            }
+
+            .content textarea {
+                max-width: 280px;
+            }
+
+            .nav.show {
+                height: 500px;
+                display: flex;
+                margin-top: 20px;
+            }
+        }
+
+        /* Canvas element styling */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+
+
+
+
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .loading-animation {
+            font-size: 1.5em;
+            color: #fff;
+        }
+
+        .loading-text {
+            font-size: 2em;
+            font-weight: bold;
+            margin-top: 20px;
+            background: linear-gradient(90deg, #ff007f, #7f00ff, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 5s linear infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Loader Animation */
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 300px;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ff007f, #7f00ff, #00d2ff);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+    </style>
+</head>
+
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    
+    <div class="header">
+        <div class="logo"><img src="{{ url_for('static', filename='favicon.png') }}" width="50px" height="50px">Busiee AI</div>
+        <div class="menu-toggle" onclick="toggleNav()">☰</div>
+        
+    </div>
+
+    <div class="content">
+        <h1>Create Your Own <b>BUSINESS</b> in <b>LESS THAN 5 MINUTES</b> using <b>BUSIEE AI</b></h1>
+        <p>Unleash the power within Brainwave. Upgrade your productivity with Brainwave, the open AI chat app.</p>
+
+        <form action="/generate" method="POST">
+            <textarea name="business_idea" rows="4" placeholder="Enter your business idea here..." required></textarea>
+            <br>
+            <button type="submit" id="startBtn">Generate Business</button>
+        </form>
+    </div>
+
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-animation">
+            <div class="loader"></div>
+            <div class="loading-text" id="loadingText">Generating NAME</div>
+            <!-- Progress bar below the text -->
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingText = document.getElementById('loadingText');
+        const progressBar = document.getElementById('progressBar');
+
+        // Array of texts to show in sequence
+        const loadingMessages = [
+            "Generating NAME",
+            "Generating DESCRIPTION",
+            "Generating LOGO",
+            "Generating MVP",
+            "Generating MARKET FIT",
+            "Generating PROMOTION PLAN",
+            "Generating BUSINESS MODEL",
+            "Generating UI DESIGN"
+        ];
+
+        let currentMessageIndex = 0;
+        let progress = 0;
+        const totalLoadingTime = 80000; // 1 minute and 20 seconds in milliseconds
+        const intervalTime = totalLoadingTime / loadingMessages.length; // 10 seconds per message (8 seconds)
+
+        // Show loading screen for 1 minute and 20 seconds
+        startBtn.addEventListener('click', () => {
+            loadingScreen.style.display = 'flex';
+            progress = 0;
+
+            // Change loading text and update progress bar every 8 seconds
+            const textInterval = setInterval(() => {
+                loadingText.textContent = loadingMessages[currentMessageIndex];
+                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+            }, 8000);
+
+            // Update the progress bar every 100ms
+            const progressInterval = setInterval(() => {
+                progress += (100 / (totalLoadingTime / 100));
+                progressBar.style.width = progress + "%";
+            }, 100);
+
+            // Hide the loading screen after 80 seconds
+            setTimeout(() => {
+                clearInterval(textInterval);
+                clearInterval(progressInterval);
+                loadingScreen.style.display = 'none';
+                progressBar.style.width = "0"; // Reset the progress bar
+            }, totalLoadingTime);
+        });
+    </script>
+    <div class="footer">
+        <p>&copy; 2024 Busiee AI. All Rights Reserved.</p>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        function toggleNav() {
+            const nav = document.querySelector('.nav');
+            nav.classList.toggle('show');
+        }
+
+        // Circle Animation for Mouse Movement
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+        let circles = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Circle object
+        function Circle(x, y, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.dx = (Math.random() - 0.5) * 4; // Horizontal movement speed
+            this.dy = (Math.random() - 0.5) * 4; // Vertical movement speed
+
+            this.draw = function () {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+            };
+
+            this.update = function () {
+                this.x += this.dx;
+                this.y += this.dy;
+
+                if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                    this.dx = -this.dx;
+                }
+                if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                    this.dy = -this.dy;
+                }
+
+                this.draw();
+            };
+        }
+
+        // Initialize circles
+        for (let i = 0; i < 50; i++) {
+            let radius = Math.random() * 10 + 5;
+            let x = Math.random() * (canvas.width - radius * 2) + radius;
+            let y = Math.random() * (canvas.height - radius * 2) + radius;
+            let color = ['#ff009d', '#0a91ff', '#8913ff'][Math.floor(Math.random() * 3)];
+            circles.push(new Circle(x, y, radius, color));
+        }
+
+        // Update canvas on mouse move
+        document.addEventListener('mousemove', function (event) {
+            let mouseX = event.clientX;
+            let mouseY = event.clientY;
+
+            circles.forEach(circle => {
+                let dx = circle.x - mouseX;
+                let dy = circle.y - mouseY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 150) {
+                    circle.dx = -dx / 10;
+                    circle.dy = -dy / 10;
+                }
+            });
+        });
+
+        // Animation Loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            circles.forEach(circle => circle.update());
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+
+</html>
