@@ -71,6 +71,11 @@
         h2{
             color: #00d2ff;
         }
+        @media (max-width: 480px) {
+            .container{
+                width: 310px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -103,7 +108,7 @@
         
         {% if logo_image %}
         <h2>LOGO</h2>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="LOGO" width="310px;">
         {% endif %}
         <br>
 
@@ -139,7 +144,7 @@
 
 
 
-        <h2>PROMOTION</h2>
+        <h2>SOCIAL MEDIA POSTS</h2>
         <p>{{ promotion | safe  }}</p>
         <br>
 
@@ -164,7 +169,20 @@
 
 
         
+        <h2>CODE</h2>
+        <p>{{ code | safe  }}</p>
+        <br>
+        <br>
 
+
+
+
+        <br>
+
+
+
+
+        
         {% if ui_image %}
         <h2>UI Design</h2>
         <img src="{{ url_for('static', filename='ui.png') }}" alt="UI Design">
