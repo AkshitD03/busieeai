@@ -58,7 +58,7 @@ def generate():
         mfr = clean_html(response.choices[0].message.content)
 
         # Generate Promotion Plan
-        pr_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now generate the 20 SOCIAL MEDIA POSTS (generate the output in html form as I am gong to display it in html page directly without editing and also do not write anything else in the response. Add css only in border of each social meida Make it simple and do add the html in blocks of lists only. Write all the headings in h3 tag. DO NOT ADD BUTTONS)"
+        pr_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now generate the 20 SOCIAL MEDIA POSTS (generate the output in html form as I am gong to display it in html page directly without editing and also do not write anything else in the response. Write the social media post in this code - //<div class= 'post'> <h3>~heading of the post~</h3> <br> <p>Its content</p>// Make it simple and do add the html in blocks of lists only. Write all the headings in h3 tag. DO NOT ADD BUTTONS)"
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": pr_query}]
