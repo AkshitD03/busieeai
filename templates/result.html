@@ -78,6 +78,81 @@
             .container{
                 width: 310px;
             }
+            .chatbot-button{
+                right: 500px;
+            }
+            .chatbot-button{
+                right: 460px;
+            }
+        }
+                /* Chatbot Styles */
+                .chatbot-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #00d2ff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .chatbot-window {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #ff007f;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background-color: #00d2ff;
+            color: #111;
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .chatbot-body {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .chatbot-input-container {
+            display: flex;
+            padding: 10px;
+        }
+
+        .chatbot-input {
+            flex-grow: 1;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .chatbot-send-button {
+            background-color: #00d2ff;
+            color: #111;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -202,7 +277,7 @@
         
         {% if ui_image %}
         <h2>UI Design</h2>
-        <img src="{{ url_for('static', filename='ui.png') }}" alt="UI Design">
+        <img src="{{ url_for('static', filename='ui.png') }}" alt="UI Design" width="320px" height="320px">
         {% endif %}
 
        
@@ -211,5 +286,60 @@
     <br>
        
     <button><a href="/">Back to Home</a></button>
+
+    <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window" id="chatbot-window">
+        <div class="chatbot-header">Business AI Chatbot</div>
+        <div class="chatbot-body" id="chatbot-body">
+            <div>Hi! I'm here to help with your business queries.</div>
+        </div>
+        <div class="chatbot-input-container">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Type a message...">
+            <button class="chatbot-send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleChatbot() {
+            const chatbotWindow = document.getElementById('chatbot-window');
+            if (chatbotWindow.style.display === 'none' || chatbotWindow.style.display === '') {
+                chatbotWindow.style.display = 'block';
+            } else {
+                chatbotWindow.style.display = 'none';
+            }
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('chatbot-input');
+            const message = inputField.value;
+            if (message.trim() === '') return;
+
+            // Display user message
+            const chatBody = document.getElementById('chatbot-body');
+            const userMessage = `<div><strong>You:</strong> ${message}</div>`;
+            chatBody.innerHTML += userMessage;
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            inputField.value = ''; // Clear the input field
+
+            // Send message to server
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({message: message}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const botMessage = `<div><strong>Business AI:</strong> ${data.reply}</div>`;
+                chatBody.innerHTML += botMessage;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>

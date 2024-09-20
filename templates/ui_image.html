@@ -185,3 +185,78 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+    <h1 class="heading">Business Generated</h1>
+    <div class="business-name">
+        <b><h1 style="color: #ff009d;">{{ business_name }}</h1></b>
+    </div>
+    <div class="business-info">
+        <div class="description">
+            <h2>Description</h2>
+            <p>{{ description | safe }}</p>
+        </div>
+       
+        {% if logo_image %}
+        <div class="logo">
+            <h2>Logo</h2>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
+        </div>
+        {% endif %}
+    </div>
+
+    <br>
+    <h2>MVP</h2>
+    <p>{{ mvp | safe }}</p>
+    <br>
+
+    <h2>Market Fit</h2>
+    <p>{{ market_fit | safe }}</p>
+    <br>
+
+    <h2>Social Media Posts</h2>
+    <p>{{ promotion | safe }}</p>
+    <br>
+
+    <h2>Business Model</h2>
+    <p>{{ business_model | safe }}</p>
+    <br>
+
+    <h2>Target Audience</h2>
+    <p>{{ tar | safe }}</p>
+    <br>
+
+    <h2>Idea Strength</h2>
+    <p>{{ isr | safe }}</p>
+    <br>
+
+    <h2>Code</h2>
+    <p>{{ code | safe }}</p>
+    <br>
+
+    {% if ui_image %}
+    <h2>UI Design</h2>
+    <img src="{{ url_for('static', filename='ui.png') }}" alt="UI Design">
+    {% endif %}
+</div>
+<br>
+<button><a href="/">Back to Home</a></button>

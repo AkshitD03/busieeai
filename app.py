@@ -72,7 +72,22 @@ def generate():
             messages=[{"role": "user", "content": bm_query}]
         )
         bmr = clean_html(response.choices[0].message.content)
+       
+        # Generate Business Model
+        ta_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now generate thetarget audience for the business.(generate the output in html form as I am gong to display it in html page directly without editing and also do not write anything else in the response. Do not add css to the response. Make it simple and do add the html in blocks of lists only. Write all the headings in h3 tag. DO NOT ADD BUTTONS)"
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": ta_query}]
+        )
+        tar = clean_html(response.choices[0].message.content)
 
+       # Generate Business Model
+        is_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now rate the idea of the business out of 10. Tell me only the number in 1 number.(generate the output in html form as I am gong to display it in html page directly without editing and also do not write anything else in the response. Do not add css to the response. Make it simple and do add the html in blocks of lists only. Write all the headings in h3 tag. DO NOT ADD BUTTONS)"
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": is_query}]
+        )
+        isr = clean_html(response.choices[0].message.content)
 
         # Generate Code
         co_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now generate the frontend of the app using html css and js in 1 html file only. GIVE ME ONLY THE CODE DO NOT WRITE AYTHING ELSE LIKE SURE, OK I AM GIVING, NO JUST CODE IN 1 HTML FILE. "
@@ -135,6 +150,8 @@ def generate():
             market_fit=mfr,
             promotion=prr,
             business_model=bmr,
+            tar=tar,
+            isr=isr,
             code=cor,
             logo_image=logo_image,
             ui_image=ui_image,
@@ -148,6 +165,26 @@ def ui_image():
 @app.route('/ad_image')
 def ad_image():
     return render_template('ad_image.html')
+
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    user_input = request.json['message']
+    
+    # Prepare the GPT prompt
+    train = f"From now, your name is Business AI. You help people related to their business. Now answer my question related to business: {user_input}"
+    
+    # Call GPT model
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": train}]
+    )
+    
+    # Extract the response
+    chatbot_reply = clean_html(response.choices[0].message.content.strip())
+    
+    # Return the response as JSON
+    return {'reply': chatbot_reply}
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0" , port="5000",debug=True)

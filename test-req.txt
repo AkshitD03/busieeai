@@ -3,7 +3,13 @@ pillow==10.3.0
 g4f==0.3.2.4
 requests==2.28.2
 
-
+ # Generate Business Model
+        is_query = f"This is an idea of business - {query}------. This is name of the business - {namer}. And this is the description of the business - {descr}. Now rate the idea of the business out of 10. Tell me only the number in 1 number.(generate the output in html form as I am gong to display it in html page directly without editing and also do not write anything else in the response. Do not add css to the response. Make it simple and do add the html in blocks of lists only. Write all the headings in h3 tag. DO NOT ADD BUTTONS)"
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": is_query}]
+        )
+        isr = clean_html(response.choices[0].message.content)
 
 
 
